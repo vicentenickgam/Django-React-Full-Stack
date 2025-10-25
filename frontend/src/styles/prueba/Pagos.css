@@ -1,0 +1,150 @@
+/* === Pagos.css === */
+
+body{
+  margin: 0;
+}
+
+/* Fondo general */
+.pagos-container {
+  background-color: #1e3a5f;
+  color: #111;
+  min-height: 100vh;
+  padding: 24px;
+  font-family: "Inter", sans-serif;
+}
+
+/* Título principal */
+.pagos-title {
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 1rem;
+}
+
+/* Tarjeta principal */
+.pagos-card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Encabezado */
+.pagos-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.new-payment-btn {
+  background-color: #086F9F; /* amarillo */
+  color: #000;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.new-payment-btn:hover {
+  background-color: #064c6d;
+}
+
+/* Tabla */
+.pagos-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  font-size: 0.95rem;
+}
+
+.pagos-table thead {
+  background-color: #f1f5f9;
+  font-weight: 600;
+}
+
+.pagos-table th,
+.pagos-table td {
+  padding: 10px 14px;
+  text-align: left;
+}
+
+.pagos-table tbody tr {
+  border-top: 1px solid #e2e8f0;
+}
+
+.pagos-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+/* === Modal === */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+}
+
+.modal-container {
+  background-color: #f3f4f6;
+  padding: 20px;
+  border-radius: 10px;
+  width: 340px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.modal-title {
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.modal-input {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.9rem;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.cancel-btn {
+  background-color: #9ca3af;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.cancel-btn:hover {
+  background-color: #6b7280;
+}
+
+.save-btn {
+  background-color: #086F9F;
+  color: #000;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  background-color: #064c6d;
+}

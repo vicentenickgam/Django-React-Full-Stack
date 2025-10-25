@@ -1,0 +1,50 @@
+
+body{
+  margin: 0;
+}
+
+/* === MENÚ SUPERIOR === */
+
+.menu-container {
+  background-color: #1e3a5f;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 32px;
+  border-radius: 6px;
+}
+
+.menu-title {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.menu-links {
+  display: flex;
+  gap: 24px;
+}
+
+.menu-link {
+  background: transparent;
+  border: none;
+  color: #e2e8f0;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: color 0.2s ease, border-bottom 0.2s ease;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 4px;
+}
+
+.menu-link:hover {
+  color: #fff;
+  border-bottom: 2px solid #fff;
+}
+
+/* Activo (página actual) */
+.menu-link.active {
+  color: #fff;
+  font-weight: 600;
+  border-bottom: 2px solid #22c55e; /* verde */
+}

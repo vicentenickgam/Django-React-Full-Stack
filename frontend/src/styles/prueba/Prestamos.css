@@ -1,0 +1,182 @@
+body{
+  margin: 0;
+}
+
+/* === Fondo principal === */
+.prestamos-container {
+  background-color: #1e3a5f; /* azul oscuro */
+  color: #111;
+  min-height: 100vh;
+  padding: 24px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* === Tarjeta principal === */
+.prestamos-card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.prestamos-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* === Botón principal === */
+.new-loan-btn {
+  background-color: #eab308; /* amarillo */
+  color: #000;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.new-loan-btn:hover {
+  background-color: #ca8a04; /* más oscuro */
+}
+
+/* === Tabla === */
+.prestamos-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  font-size: 0.95rem;
+}
+
+.prestamos-table thead {
+  background-color: #f1f5f9;
+  font-weight: 600;
+}
+
+.prestamos-table th,
+.prestamos-table td {
+  padding: 10px 14px;
+  text-align: left;
+}
+
+.prestamos-table tbody tr {
+  border-top: 1px solid #e2e8f0;
+}
+
+.prestamos-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+/* === Botón Ver Detalle === */
+.ver-detalle-btn {
+  background-color: #2563eb;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.ver-detalle-btn:hover {
+  background-color: #1e40af;
+}
+
+/* === Modal Nuevo Préstamo === */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(30, 41, 59, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+}
+
+.modal {
+  background-color: #f1f5f9;
+  border-radius: 12px;
+  padding: 24px;
+  width: 380px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #111;
+}
+
+.modal-input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.btn-cancelar {
+  background-color: #e2e8f0;
+  color: #111;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-cancelar:hover {
+  background-color: #cbd5e1;
+}
+
+.btn-guardar {
+  background-color: #eab308;
+  color: #000;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-guardar:hover {
+  background-color: #ca8a04;
+}
+
+/* === Detalle del Préstamo === */
+.detalle-info p {
+  margin: 4px 0;
+  font-size: 0.95rem;
+}
+
+.btn-volver {
+  background-color: #9ca3af;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.btn-volver:hover {
+  background-color: #6b7280;
+}
