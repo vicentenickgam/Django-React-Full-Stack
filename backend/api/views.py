@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from rest_framework import generics
-from .serializers import UserSerializer, NoteSerializer
+from rest_framework import generics,viewsets
+from .serializers import UserSerializer, NoteSerializer,AdministradorSerializer, EmpleadoSerializer,PrestamoSerializer, PagoSerializer
 from rest_framework.permissions import IsAuthenticated,AllowAny
-from.models import Note
+from.models import Note, Administrador, Empleado, Prestamo, Pago
 
 class NoteListCreate(generics.ListCreateAPIView):
     serializer_class = NoteSerializer
@@ -30,4 +30,26 @@ class NoteDelete(generics.DestroyAPIView):
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [AllowAny]
+
+
+class AdministradorViewSet(viewsets.ModelViewSet):
+    queryset = Administrador.objects.all()
+    serializer_class = AdministradorSerializer
+
+
+class EmpleadoViewSet(viewsets.ModelViewSet):
+    queryset = Empleado.objects.all()
+    serializer_class = EmpleadoSerializer
+    permission_classes = [AllowAny]
+
+
+class PrestamoViewSet(viewsets.ModelViewSet):
+    queryset = Prestamo.objects.all()
+    serializer_class = PrestamoSerializer
+    permission_classes = [AllowAny]
+
+class PagoViewSet(viewsets.ModelViewSet):
+    queryset = Pago.objects.all()
+    serializer_class = PagoSerializer
     permission_classes = [AllowAny]

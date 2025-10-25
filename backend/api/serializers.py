@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Note
+from .models import Note,Administrador, Empleado, Prestamo, Pago
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,9 +17,8 @@ class NoteSerializer(serializers.ModelSerializer):
         model = Note
         fields = ["id", "title", "content", "created_at", "author"]
         extra_kwargs = {"author": {"read_only": True}}
+        
 
-from rest_framework import serializers
-from .models import Administrador, Empleado, Prestamo, Pago
 
 class AdministradorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,9 +33,13 @@ class EmpleadoSerializer(serializers.ModelSerializer):
 
 
 class PagoSerializer(serializers.ModelSerializer):
+    prestamo = serializers.PrimaryKeyRelatedField(queryset=Prestamo.objects.all())
+    empleado_nombre = serializers.CharField(source='prestamo.empleado.nombre', read_only=True)
+
     class Meta:
         model = Pago
-        fields = '__all__'
+        fields = ['id', 'prestamo', 'fecha_pago', 'monto_abono', 'saldo_despues_pago', 'empleado_nombre']
+
 
 
 class PrestamoSerializer(serializers.ModelSerializer):

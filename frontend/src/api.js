@@ -1,23 +1,16 @@
-import axios from "axios"
-import { ACCESS_TOKEN } from "./constants"
+import axios from "axios";
 
-//const apiUrl = "/choreo-apis/impulsarth/backend/v1"
-
+// URL base del backend Django (ajústala según tu entorno)
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL //? import.meta.env.VITE_API_URL : apiUrl,
-})
+  baseURL: "http://127.0.0.1:8000/api/",
+});
 
-api.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem(ACCESS_TOKEN)
-        if(token){
-            config.headers.Authorization =`Bearer ${token}`
-        }
-        return config
-    },
-    (error) => {
-        return Promise.reject(error)
-    }
-)
+// Ejemplo de endpoints reutilizables
+export const getEmpleados = () => api.get("empleados/");
+export const getPrestamos = () => api.get("prestamos/");
+export const getPagos = () => api.get("pagos/");
+export const getPrestamoById = (id) => api.get(`prestamos/${id}/`);
 
-export default api
+export const createPago = (pago) => api.post("pagos/", pago);
+
+export default api;
