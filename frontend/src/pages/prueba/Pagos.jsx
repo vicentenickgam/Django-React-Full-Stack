@@ -7,7 +7,7 @@ export default function Pagos() {
   const [prestamos, setPrestamos] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [nuevoPago, setNuevoPago] = useState({
-    prestamo: "",
+    prestamo_id: "",
     fecha_pago: "",
     monto_abono: "",
   });
@@ -16,61 +16,65 @@ export default function Pagos() {
 
   const API_URL = "http://127.0.0.1:8000/api";
 
-  // 🔹 Cargar lista de pagos y préstamos
   useEffect(() => {
-    const fetchPagos = async () => {
+    const fetchData = async () => {
       try {
-        const res = await fetch(`${API_URL}/pagos/`);
-        if (!res.ok) throw new Error("Error al obtener los pagos");
-        const data = await res.json();
-        setPagos(data);
+        const [pagosRes, prestamosRes] = await Promise.all([
+          fetch(`${API_URL}/pagos/`),
+          fetch(`${API_URL}/prestamos/`),
+        ]);
+        if (!pagosRes.ok || !prestamosRes.ok)
+          throw new Error("Error al cargar datos");
+
+        const pagosData = await pagosRes.json();
+        const prestamosData = await prestamosRes.json();
+
+        setPagos(pagosData);
+        setPrestamos(prestamosData);
       } catch (error) {
-        console.error(error);
+        console.error("❌ Error al cargar:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    const fetchPrestamos = async () => {
-      try {
-        const res = await fetch(`${API_URL}/prestamos/`);
-        if (!res.ok) throw new Error("Error al obtener préstamos");
-        const data = await res.json();
-        setPrestamos(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchPagos();
-    fetchPrestamos();
+    fetchData();
   }, []);
 
-  // 🔹 Manejar cambios en los inputs
   const handleChange = (e) => {
-    setNuevoPago({ ...nuevoPago, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    if (name === "prestamo_id") {
+      const prestamoSel = prestamos.find((p) => p.id === Number(value));
+      setNuevoPago({
+        ...nuevoPago,
+        prestamo_id: value,
+        monto_abono: prestamoSel ? prestamoSel.valor_cuota : "",
+      });
+    } else {
+      setNuevoPago({ ...nuevoPago, [name]: value });
+    }
   };
 
-  // 🔹 Registrar un nuevo pago
   const handleGuardarPago = async () => {
-    if (!nuevoPago.prestamo || !nuevoPago.fecha_pago || !nuevoPago.monto_abono) {
+    const { prestamo_id, fecha_pago, monto_abono } = nuevoPago;
+
+    if (!prestamo_id || !fecha_pago || !monto_abono) {
       setMensaje("⚠️ Todos los campos son obligatorios.");
       return;
     }
 
-    // Ajuste importante: Django espera "prestamo_id", no "prestamo"
-const pagoConSaldo = {
-  prestamo: Number(nuevoPago.prestamo),  // 👈 importante: debe ser "prestamo", no "prestamo_id"
-  fecha_pago: nuevoPago.fecha_pago,
-  monto_abono: Number(nuevoPago.monto_abono),
-  saldo_despues_pago: 0,
-};
+    const pagoData = {
+      prestamo_id: Number(prestamo_id),
+      fecha_pago,
+      monto_abono: parseFloat(monto_abono),
+    };
 
     try {
       const res = await fetch(`${API_URL}/pagos/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(pagoConSaldo),
+        body: JSON.stringify(pagoData),
       });
 
       if (!res.ok) throw new Error("Error al registrar el pago");
@@ -78,13 +82,13 @@ const pagoConSaldo = {
       const pagoGuardado = await res.json();
       setPagos([...pagos, pagoGuardado]);
       setMensaje("✅ Pago registrado correctamente.");
-      setShowModal(false);
-      setNuevoPago({ prestamo: "", fecha_pago: "", monto_abono: "" });
 
-      // Ocultar mensaje después de unos segundos
+      setNuevoPago({ prestamo_id: "", fecha_pago: "", monto_abono: "" });
+      setShowModal(false);
+
       setTimeout(() => setMensaje(""), 3000);
     } catch (error) {
-      console.error(error);
+      console.error("❌ Error al guardar pago:", error);
       setMensaje("❌ No se pudo registrar el pago.");
     }
   };
@@ -103,7 +107,6 @@ const pagoConSaldo = {
           </button>
         </div>
 
-        {/* Mostrar mensaje */}
         {mensaje && (
           <div
             className={`mensaje ${
@@ -118,11 +121,10 @@ const pagoConSaldo = {
           </div>
         )}
 
-        {/* Tabla de pagos */}
         <table className="pagos-table">
           <thead>
             <tr>
-              <th>Cliente</th>
+              <th>Empleado</th>
               <th>Préstamo</th>
               <th>Fecha de Pago</th>
               <th>Monto Abonado</th>
@@ -132,8 +134,8 @@ const pagoConSaldo = {
             {pagos.length > 0 ? (
               pagos.map((pago) => (
                 <tr key={pago.id}>
-                  <td>{pago.empleado_nombre || "Desconocido"}</td>
-                  <td>Préstamo #{pago.prestamo?.id}</td>
+                  <td>{pago.prestamo?.empleado_nombre || pago.prestamo?.empleado?.nombre || "Desconocido"}</td>
+                  <td>#{pago.prestamo?.id || pago.prestamo_id}</td>
                   <td>{pago.fecha_pago}</td>
                   <td>${Number(pago.monto_abono).toLocaleString()}</td>
                 </tr>
@@ -149,28 +151,25 @@ const pagoConSaldo = {
         </table>
       </div>
 
-      {/* === Modal Nuevo Pago === */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-container">
             <h3 className="modal-title">Registrar Pago</h3>
-
-            {/* Seleccionar préstamo */}
             <select
-              name="prestamo"
+              name="prestamo_id"
               className="modal-input"
-              value={nuevoPago.prestamo}
+              value={nuevoPago.prestamo_id}
               onChange={handleChange}
             >
               <option value="">Seleccionar préstamo</option>
-              {prestamos.map((p) => (
-                <option key={p.id} value={p.id}>
-                  #{p.id} - {p.empleado?.nombre || "Sin nombre"}
-                </option>
-              ))}
+              {prestamos
+                .filter((p) => p.estado !== "Pagado") // 🔹 Muestra solo los préstamos activos
+                .map((p) => (
+                  <option key={p.id} value={p.id}>
+                    #{p.id} - {p.empleado?.nombre} (${p.valor_cuota}/cuota)
+                  </option>
+                ))}
             </select>
-
-            {/* Fecha del pago */}
             <input
               type="date"
               name="fecha_pago"
@@ -179,17 +178,15 @@ const pagoConSaldo = {
               className="modal-input"
             />
 
-            {/* Monto abonado */}
             <input
               type="number"
               name="monto_abono"
-              placeholder="Monto"
+              placeholder="Monto abonado"
               value={nuevoPago.monto_abono}
-              onChange={handleChange}
               className="modal-input"
+              readOnly
             />
 
-            {/* Botones */}
             <div className="modal-actions">
               <button onClick={() => setShowModal(false)} className="cancel-btn">
                 Cancelar

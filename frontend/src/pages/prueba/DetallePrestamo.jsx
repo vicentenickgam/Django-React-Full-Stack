@@ -82,7 +82,6 @@ export default function DetallePrestamo() {
             <tr>
               <th>Fecha de Pago</th>
               <th>Monto Abonado</th>
-              <th>Saldo Después del Pago</th>
             </tr>
           </thead>
           <tbody>
@@ -91,7 +90,6 @@ export default function DetallePrestamo() {
                 <tr key={index}>
                   <td>{pago.fecha_pago}</td>
                   <td>${Number(pago.monto_abono).toLocaleString()}</td>
-                  <td>${Number(pago.saldo_despues_pago).toLocaleString()}</td>
                 </tr>
               ))
             ) : (

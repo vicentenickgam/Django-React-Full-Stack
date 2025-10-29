@@ -1,4 +1,3 @@
-// /pages/prueba/Empleados.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Menu from "./Menu";
@@ -11,10 +10,11 @@ export default function Empleados() {
     nombre: "",
     documento: "",
     cargo: "",
+    empresa: "", // 👈 nuevo campo
     estado: "Activo",
   });
 
-  // Cargar empleados desde el backend
+  // Cargar empleados
   useEffect(() => {
     obtenerEmpleados();
   }, []);
@@ -32,8 +32,14 @@ export default function Empleados() {
     try {
       await axios.post("http://127.0.0.1:8000/api/empleados/", nuevoEmpleado);
       setShowModal(false);
-      setNuevoEmpleado({ nombre: "", documento: "", cargo: "", estado: "Activo" });
-      obtenerEmpleados(); // recargar lista
+      setNuevoEmpleado({
+        nombre: "",
+        documento: "",
+        cargo: "",
+        empresa: "",
+        estado: "Activo",
+      });
+      obtenerEmpleados();
     } catch (error) {
       console.error("Error al crear empleado:", error);
     }
@@ -60,6 +66,7 @@ export default function Empleados() {
               <th>Nombre</th>
               <th>Documento</th>
               <th>Cargo</th>
+              <th>Empresa</th>
               <th>Estado</th>
             </tr>
           </thead>
@@ -70,12 +77,13 @@ export default function Empleados() {
                   <td>{emp.nombre}</td>
                   <td>{emp.documento}</td>
                   <td>{emp.cargo}</td>
+                  <td>{emp.empresa}</td>
                   <td>{emp.estado}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="4">No hay empleados registrados</td>
+                <td colSpan="5">No hay empleados registrados</td>
               </tr>
             )}
           </tbody>
@@ -115,6 +123,16 @@ export default function Empleados() {
                 setNuevoEmpleado({ ...nuevoEmpleado, cargo: e.target.value })
               }
             />
+            <input
+              type="text"
+              placeholder="Empresa"
+              className="modal-input"
+              value={nuevoEmpleado.empresa}
+              onChange={(e) =>
+                setNuevoEmpleado({ ...nuevoEmpleado, empresa: e.target.value })
+              }
+            />
+
             <select
               className="modal-input"
               value={nuevoEmpleado.estado}

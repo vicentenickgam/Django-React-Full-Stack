@@ -10,6 +10,7 @@ class Note(models.Model):
     def __str__(self):
         return self.title
 
+
 class Administrador(models.Model):
     usuario = models.CharField(max_length=100, unique=True)
     contrasena = models.CharField(max_length=100)
@@ -27,6 +28,7 @@ class Empleado(models.Model):
     nombre = models.CharField(max_length=100)
     documento = models.CharField(max_length=50, unique=True)
     cargo = models.CharField(max_length=100)
+    empresa = models.CharField(max_length=100, default="")  # 👈 Nuevo campo
     estado = models.CharField(max_length=10, choices=ESTADOS, default='Activo')
 
     def __str__(self):
@@ -55,7 +57,6 @@ class Pago(models.Model):
     prestamo = models.ForeignKey(Prestamo, on_delete=models.CASCADE, related_name='pagos')
     fecha_pago = models.DateField()
     monto_abono = models.DecimalField(max_digits=10, decimal_places=2)
-    saldo_despues_pago = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
         return f"Pago {self.id} - {self.prestamo.id}"
