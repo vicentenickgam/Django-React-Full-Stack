@@ -1,0 +1,137 @@
+.reportes-container {
+  background-color: #1e3a5f; /* fondo azul igual que Préstamos */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.contenido-principal {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 20px;
+}
+
+.card-reportes {
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.encabezado h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1e3a5f;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icono-titulo {
+  width: 28px;
+  height: 28px;
+}
+
+.filtro-empresa {
+  margin-bottom: 1.5rem;
+}
+
+.filtro-empresa label {
+  font-weight: 600;
+  color: #333;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.filtro-empresa select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+.filtro-empresa select:focus {
+  border-color: #1e3a5f;
+  box-shadow: 0 0 5px rgba(30, 58, 95, 0.3);
+}
+
+.nota {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 4px;
+}
+
+.tabla-container {
+  overflow-x: auto;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+th, td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+th {
+  background-color: #f3f4f6;
+  color: #333;
+  font-weight: 600;
+}
+
+tr:hover {
+  background-color: #f9fafb;
+  transition: 0.2s ease;
+}
+
+.botones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn-azul {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.btn-azul:hover {
+  background-color: #1e40af;
+}
+
+.btn-amarillo {
+  background-color: #facc15;
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.btn-amarillo:hover {
+  background-color: #eab308;
+}

@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from decimal import Decimal
 from .models import Note, Administrador, Empleado, Prestamo, Pago
-
 
 # 🔹 Usuario
 class UserSerializer(serializers.ModelSerializer):
@@ -13,7 +13,6 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
 
-
 # 🔹 Nota
 class NoteSerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,13 +20,11 @@ class NoteSerializer(serializers.ModelSerializer):
         fields = ["id", "title", "content", "created_at", "author"]
         extra_kwargs = {"author": {"read_only": True}}
 
-
 # 🔹 Administrador
 class AdministradorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Administrador
         fields = '__all__'
-
 
 # 🔹 Empleado
 class EmpleadoSerializer(serializers.ModelSerializer):
@@ -35,36 +32,13 @@ class EmpleadoSerializer(serializers.ModelSerializer):
         model = Empleado
         fields = '__all__'
 
-
-# 🔹 Prestamo simple (para usar dentro de PagoSerializer)
-class PrestamoSimpleSerializer(serializers.ModelSerializer):
-    empleado_nombre = serializers.CharField(source='empleado.nombre', read_only=True)
-
-    class Meta:
-        model = Prestamo
-        fields = ['id', 'empleado_nombre', 'valor_cuota']
-
-
-# 🔹 Pago
-class PagoSerializer(serializers.ModelSerializer):
-    # ✅ Solo mostrar datos resumidos del préstamo, no el objeto completo
-    prestamo = PrestamoSimpleSerializer(read_only=True)
-    prestamo_id = serializers.PrimaryKeyRelatedField(
-        queryset=Prestamo.objects.all(), source='prestamo', write_only=True
-    )
-
-    class Meta:
-        model = Pago
-        fields = ['id', 'prestamo', 'prestamo_id', 'fecha_pago', 'monto_abono']
-
-
-
+# 🔹 Prestamo
 class PrestamoSerializer(serializers.ModelSerializer):
     empleado = EmpleadoSerializer(read_only=True)
     empleado_id = serializers.PrimaryKeyRelatedField(
         queryset=Empleado.objects.all(), source='empleado', write_only=True
     )
-    pagos = serializers.SerializerMethodField()  
+    pagos = serializers.SerializerMethodField()
     cuotas_pagadas = serializers.SerializerMethodField()
 
     class Meta:
@@ -85,15 +59,41 @@ class PrestamoSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """
-        Calcula automáticamente el saldo_actual con un 10% de interés sobre el valor solicitado.
+        Calcula automáticamente los valores derivados usando la misma lógica del frontend:
+          gastosAdm = valor_solicitado * 0.04
+          basePrestamo = valor_solicitado + (numero_cuotas * gastosAdm)
+          valor_cuota = basePrestamo / numero_cuotas
+          saldo_actual = basePrestamo
         """
-        interes = 10  # 💰 Porcentaje de interés (puedes hacerlo dinámico luego)
-        valor_solicitado = validated_data.get('valor_solicitado', 0)
+        from decimal import Decimal, ROUND_HALF_UP
 
-        # 🔹 Cálculo del saldo actual con interés
-        saldo_actual = valor_solicitado + (valor_solicitado * interes / 100)
+        valor_solicitado = validated_data.get('valor_solicitado', Decimal('0'))
+        numero_cuotas = validated_data.get('numero_cuotas', 1)
+
+        try:
+            n = int(numero_cuotas)
+            if n <= 0:
+                n = 1
+        except (TypeError, ValueError):
+            n = 1
+
+        gastos_adm = valor_solicitado * Decimal('0.04')
+        base_prestamo = valor_solicitado + (Decimal(n) * gastos_adm)
+        valor_cuota = (base_prestamo / Decimal(n)).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+        saldo_actual = base_prestamo.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+
         validated_data['saldo_actual'] = saldo_actual
+        validated_data['valor_cuota'] = valor_cuota
 
-        # 🔹 Crear préstamo
         return super().create(validated_data)
 
+# 🔹 Pago
+class PagoSerializer(serializers.ModelSerializer):
+    prestamo = PrestamoSerializer(read_only=True)
+    prestamo_id = serializers.PrimaryKeyRelatedField(
+        queryset=Prestamo.objects.all(), source='prestamo', write_only=True
+    )
+
+    class Meta:
+        model = Pago
+        fields = ['id', 'prestamo', 'prestamo_id', 'fecha_pago', 'monto_abono']

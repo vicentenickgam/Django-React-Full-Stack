@@ -1,56 +1,61 @@
 // src/App.jsx
 import React from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+
+// Login
 import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Home from "./pages/Home";
-import NotFound from "./pages/NotFound";
+
+// Protección de rutas
 import ProtectedRoute from "./components/ProtectedRoute";
-// páginas Prueba
-import PruebaLayout from "./pages/prueba/Layout";
-import Dashboard from "./pages/prueba/Dashboard";
-import Prestamos from "./pages/prueba/Prestamos";
-import DetallePrestamo from "./pages/prueba/DetallePrestamo";
-import Empleados from "./pages/prueba/Empleados";
-import Pagos from "./pages/prueba/Pagos";
-import Reportes from "./pages/prueba/Reportes";
+
+// Layout principal de prueba
+import PruebaLayout from "./pages/Layout";
+import Dashboard from "./pages/Dashboard";
+import Prestamos from "./pages/Prestamos";
+import DetallePrestamo from "./pages/DetallePrestamo";
+import Empleados from "./pages/Empleados";
+import Pagos from "./pages/Pagos";
+import Reportes from "./pages/Reportes";
+
+const NotFound = () => <h1>Página no encontrada</h1>;
 
 function Logout() {
-  localStorage.clear();
+  localStorage.removeItem("loggedIn");
   return <Navigate to="/login" />;
-}
-
-function RegisterAndLogout() {
-  localStorage.clear();
-  return <Register />;
 }
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/login" element={<Login />} />
-        <Route path="/logout" element={<Logout />} />
-        <Route path="/register" element={<RegisterAndLogout />} />
 
-        {/* Rutas anidadas para /prueba */}
-        <Route path="/prueba" element={<PruebaLayout />}>
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="prestamos" element={<Prestamos />} />
-          <Route path="detalle-prestamo/:id" element={<DetallePrestamo />} />
-          <Route path="empleados" element={<Empleados />} />
-          <Route path="pagos" element={<Pagos />} />
-          <Route path="reportes" element={<Reportes />} />
-          <Route index element={<Navigate to="dashboard" />} />
-        </Route>
+        {/* Login */}
+        <Route path="/login" element={<Login />} />
+
+        {/* Logout */}
+        <Route path="/logout" element={<Logout />} />
+
+        {/* RUTAS PROTEGIDAS */}
+<Route
+  path="/"
+  element={
+    <ProtectedRoute>
+      <PruebaLayout />
+    </ProtectedRoute>
+  }
+>
+  <Route index element={<Navigate to="dashboard" />} />
+  <Route path="dashboard" element={<Dashboard />} />
+  <Route path="prestamos" element={<Prestamos />} />
+  <Route path="detalle-prestamo/:id" element={<DetallePrestamo />} />
+  <Route path="empleados" element={<Empleados />} />
+  <Route path="pagos" element={<Pagos />} />
+  <Route path="reportes" element={<Reportes />} />
+</Route>
+
+
+        {/* Redirección por defecto */}
+        <Route path="/" element={<Navigate to="/login" />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
